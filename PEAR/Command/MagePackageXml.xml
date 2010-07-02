@@ -1,0 +1,18 @@
+<commands version="1.0">
+ <mage-package-xml>
+  <summary>Build Magento Package XML</summary>
+  <function>doPackage</function>
+  <shortcut>mpx</shortcut>
+  <options>
+  	<!--
+   <magento>
+    <shortopt>M</shortopt>
+    <doc>Path to Magento.</doc>
+    <arg>DIR</arg>
+   </magento>-->
+  </options>
+  <doc>[descfile]
+Creates a Magento specific PEAR package file.
+</doc>
+ </mage-package-xml>
+</commands>

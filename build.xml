@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mage-package-xml" default="test" basedir=".">
+    
+
+    <property file="build.default.properties"/>
+	<property file="build.properties"/>
+    
+    <target name="test">
+    	 <exec executable="${pear.path}">
+    	    <arg value="package"/>
+    	 </exec>
+	   	 <exec executable="${pear.path}">
+	   	    <arg value="install"/>
+	   	 	<arg value="-f"/>
+	   	 	<arg value="${pear.package.file}"/>
+	   	 </exec>
+	   	 <exec dir='../findologic/' executable="${pear.path}">
+	   	    <arg value="mpx"/>
+	   	 	<!--<arg value="-M/Users/weller/Zend/workspaces/Libraries/Magento/magento-1.4.0.1/"/>-->
+	   	 </exec>    	
+    </target>
+    
+</project>
