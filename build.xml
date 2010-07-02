@@ -14,7 +14,7 @@
 	   	 	<arg value="-f"/>
 	   	 	<arg value="${pear.package.file}"/>
 	   	 </exec>
-	   	 <exec dir='../findologic/' executable="${pear.path}">
+	   	 <exec dir='../ChangeAttributeSet/' executable="${pear.path}">
 	   	    <arg value="mpx"/>
 	   	 	<!--<arg value="-M/Users/weller/Zend/workspaces/Libraries/Magento/magento-1.4.0.1/"/>-->
 	   	 </exec>    	

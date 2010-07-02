@@ -120,8 +120,31 @@ Creates a Magento specific PEAR package file.
         $pfm->clearDeps();
         $pfm->setPhpDep((string) $this->xml->dependencies->required->php->min, (string) $this->xml->dependencies->required->php->max);
         $pfm->setPearinstallerDep('1.6.2');
-		/*
-        foreach ($this->getData('depends') as $deptype=>$deps) {
+             
+        $dependencies = array();
+
+        if(!isset($this->xml->dependencies) or !($this->xml->dependencies instanceof SimpleXMLElement)){
+        	return;
+        }
+        
+        foreach($this->xml->dependencies as $dependency){        	
+        	foreach($dependency as $debtype => $packages){			
+        		foreach($packages as $packagetype => $deps){
+        			if(!in_array($packagetype, array('package', 'subpackage', 'extension'))){
+        				continue;
+        			}
+        			$dependencies[$packagetype]['name'][] = (string) $deps->name;
+        			$dependencies[$packagetype]['channel'][] = (string) $deps->channel;
+        			$dependencies[$packagetype]['min'][] = (string) $deps->min; 
+        			$dependencies[$packagetype]['max'][] = (string) $deps->max; 
+        			$dependencies[$packagetype]['recommended'][] = (string) $deps->recommended; 
+        			$dependencies[$packagetype]['exclude'][] = (string) $deps->exclude;
+        			$dependencies[$packagetype]['type'][] = isset($deps->conflicts) ? 'conflicts' :$debtype;
+        		}
+        	}       	
+        }
+
+        foreach ($dependencies as $deptype=>$deps) {
             foreach ($deps['type'] as $i=>$type) {
                 if (0===$i) {
                     continue;
@@ -147,7 +170,7 @@ Creates a Magento specific PEAR package file.
 
                     case 'subpackage':
                         if ($type==='conflicts') {
-                            $this->raiseError("Subpackage cannot be conflicting.");
+                            Mage::throwException(Mage::helper('adminhtml')->__("Subpackage cannot be conflicting."));
                         }
                         $pfm->addSubpackageDepWithChannel(
                             $type, $name, $channel, $min, $max, $recommended, $exclude);
@@ -160,7 +183,7 @@ Creates a Magento specific PEAR package file.
                 }
             }
         }
-        */
+
     }
     
     /**
