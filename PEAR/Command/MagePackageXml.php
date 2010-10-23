@@ -17,15 +17,6 @@ class PEAR_Command_MagePackageXml extends PEAR_Command_Mage
             'summary' => 'Build Magento Package XML',
             'function' => 'doPackage',
             'shortcut' => 'mpx',
-    /*
-            'options' => array(
-                'magento' => array(
-                    'shortopt' => 'M',
-                    'doc' => 'Path to Magento.',
-    				'arg' => 'DIR'
-                    ),                    
-                ),
-               */
             'doc' => '[descfile]
 Creates a Magento specific PEAR package file.
 '
