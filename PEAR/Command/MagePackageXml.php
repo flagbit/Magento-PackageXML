@@ -35,6 +35,8 @@ Creates a Magento specific PEAR package file.
         'package' => array(),
         'release' => array(),
     );
+    
+    protected $_allreadyIncludedFiles = array();
 
     protected $_ignoreRoles = array('mageweb', 'mage');
 
@@ -66,7 +68,6 @@ Creates a Magento specific PEAR package file.
             'baseinstalldir'=>'.',
             'simpleoutput'=>true,
         ));
-
         
 	    $this->_setPackage($this->_pfm);
 
@@ -77,12 +78,7 @@ Creates a Magento specific PEAR package file.
 
         $this->_setContents($this->_pfm);        
 
-		//print_r($this->_pfm->_packageInfo);
-		//print_r($this->_pfm->_oldPackageFile->getPackage());
-        
-        
         if (!$this->_pfm->validate(PEAR_VALIDATE_NORMAL)) {
-            //echo "<pre>".print_r($this->_pfm->getValidationWarnings(), 1)."</pre>";
             $message = $this->_pfm->getValidationWarnings();
             $this->raiseError($message[0]['message']);
 
@@ -92,7 +88,7 @@ Creates a Magento specific PEAR package file.
         //$this->output = $this->_pfm->getDefaultGenerator()->toXml(PEAR_VALIDATE_NORMAL);  
         $result = $this->_pfm->writePackageFile(); 
         if($result === true){     
-        	$this->output = 'package.xml file successfully updated!';
+        	$this->output .= 'package.xml file successfully updated!';
         }
 
         if ($this->output) {
@@ -258,6 +254,12 @@ Creates a Magento specific PEAR package file.
         	$contents['ignore'][] = '';
         }
         
+        $contents['role'][] = 'mage';
+        $contents['path'][] = '';
+        $contents['type'][] = 'dir';
+        $contents['include'][] = '';
+        $contents['ignore'][] = '';        
+        
         $pfm->clearContents();
         
         $usesRoles = array();
@@ -270,7 +272,7 @@ Creates a Magento specific PEAR package file.
 
             $roleDir = $this->getRoleDir($role).DS;
             $fullPath = $roleDir.$contents['path'][$i];
-
+            
             switch ($contents['type'][$i]) {
                 case 'file':
                     if (!is_file($fullPath)) {
@@ -322,8 +324,12 @@ Creates a Magento specific PEAR package file.
                         continue;
                     }
                     $this->_addDir($pfm, $role, $roleDir, $filePath, $include, $ignore);
-                } elseif (is_file($entry)) {
-                    $pfm->addFile('/', $filePath, array('role'=>$role, 'md5sum'=>md5_file($entry)));
+                } elseif (is_file($entry) && strpos($entry, 'package.xml') === false) {
+                	$md5 = md5_file($entry);
+                	if(!in_array($md5, $this->_allreadyIncludedFiles)){
+	                	$this->_allreadyIncludedFiles[] = $md5;
+	                    $pfm->addFile('/', $filePath, array('role'=>$role, 'md5sum'=>$md5));
+                	}
                 }
             }
         }
